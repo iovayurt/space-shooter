@@ -1,2 +1,2 @@
 # space-shooter
-2.5D Space shooter game
+2D Space shooter game
