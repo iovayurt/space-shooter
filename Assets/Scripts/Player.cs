@@ -19,19 +19,34 @@ public class Player : MonoBehaviour
     private SpawnManager _spawnManager;
 
     private bool _isTripleShotActive = false;
-    [SerializeField]
     private bool _isSpeedBoostActive = false;
+    private bool _isShieldsActive = false;
+
+    [SerializeField]
+    private GameObject _shieldVisualizer;
+
+    [SerializeField]
+    private int _score;
+
+    private UIManager _uiManager;
 
     // Start is called before the first frame update
     void Start()
     {
      transform.position = new Vector3(0, 0, 0);
      _spawnManager = GameObject.Find("Spawn_Manager").GetComponent<SpawnManager>();
+     _uiManager = GameObject.Find("Canvas").GetComponent<UIManager>();
 
      if (_spawnManager == null)
      {
        Debug.LogError("The Spawn Manager is NULL");
      }
+
+     if (_uiManager == null)
+     {
+       Debug.LogError("The UI Manager is NULL");
+     }
+
     }
 
     // Update is called once per frame
@@ -93,6 +108,13 @@ public class Player : MonoBehaviour
 
     public void Damage()
     {
+        if (_isShieldsActive == true)
+        {
+          _isShieldsActive = false;
+          _shieldVisualizer.SetActive(false);
+          return;
+        }
+
         _lives--;
 
         if (_lives < 1)
@@ -126,5 +148,17 @@ public class Player : MonoBehaviour
       yield return new WaitForSeconds(5.0f);
       _isSpeedBoostActive = false;
       _speed /= _speedMultiplier;
+    }
+
+    public void ShieldsActive()
+    {
+      _isShieldsActive = true;
+      _shieldVisualizer.SetActive(true);
+    }
+
+    public void AddScore(int points)
+    {
+      _score += points;
+      _uiManager.UpdateScore(_score);
     }
 }
